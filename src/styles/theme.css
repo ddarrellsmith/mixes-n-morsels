@@ -1,0 +1,228 @@
+:root {
+  --cream: #fbf6ed;
+  --cream-dark: #f2e8d8;
+  --brown: #4d2e1d;
+  --brown-soft: #734f38;
+  --terracotta: #ca5d34;
+  --terracotta-dark: #a54521;
+  --caramel: #e0b166;
+  --white: #ffffff;
+  --muted: #ad9c8b;
+}
+
+body {
+  background-color: var(--white);
+  color: var(--brown);
+  font-family: "Nunito", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-serif {
+  font-family: "Lora", serif;
+  color: var(--brown);
+}
+
+a {
+  color: var(--terracotta);
+}
+
+/* Navbar */
+.app-navbar {
+  background-color: var(--cream) !important;
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 0.75rem 0;
+}
+
+.app-navbar .navbar-brand {
+  font-family: "Lora", serif;
+  font-weight: 700;
+  color: var(--brown) !important;
+}
+
+.app-navbar .nav-link {
+  font-weight: 700;
+  color: var(--brown) !important;
+  border-radius: 999px;
+  padding: 0.5rem 1.25rem !important;
+  margin-left: 0.25rem;
+}
+
+.app-navbar .nav-link.active {
+  background-color: var(--terracotta);
+  color: var(--white) !important;
+}
+
+/* Footer */
+.app-footer {
+  background-color: var(--cream-dark);
+  color: var(--brown);
+  text-align: center;
+  padding: 1.5rem 0;
+  font-size: 0.875rem;
+}
+
+/* Buttons */
+.btn-terracotta {
+  background-color: var(--terracotta);
+  border-color: var(--terracotta);
+  color: var(--white);
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.btn-terracotta:hover,
+.btn-terracotta:focus {
+  background-color: var(--terracotta-dark);
+  border-color: var(--terracotta-dark);
+  color: var(--white);
+}
+
+/* Cards */
+.recipe-card {
+  border: 1px solid var(--cream-dark);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(77, 46, 29, 0.08);
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.recipe-card:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+.recipe-card .card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+.recipe-card .card-title {
+  font-family: "Lora", serif;
+  color: var(--brown);
+}
+
+.recipe-card .card-author {
+  color: var(--brown-soft);
+  font-size: 0.8125rem;
+}
+
+.recipe-card .card-description {
+  color: var(--brown-soft);
+  font-size: 0.9rem;
+}
+
+/* Badges */
+.badge-category {
+  background-color: var(--caramel) !important;
+  color: var(--terracotta-dark) !important;
+  border-radius: 999px;
+  font-weight: 700;
+  padding: 0.35em 0.75em;
+}
+
+.badge-keyword {
+  background-color: var(--white) !important;
+  color: var(--terracotta) !important;
+  border: 1px solid var(--terracotta);
+  border-radius: 999px;
+  font-weight: 700;
+  padding: 0.35em 0.75em;
+}
+
+/* Category tiles */
+.category-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 140px;
+  border-radius: 20px;
+  color: var(--white);
+  font-family: "Lora", serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.category-tile:hover {
+  transform: translateY(-2px);
+  color: var(--white);
+}
+
+/* Hero */
+.hero-section {
+  background-color: var(--caramel);
+  padding: 6rem 2rem;
+  text-align: center;
+}
+
+.hero-section p {
+  color: var(--brown-soft);
+}
+
+/* Search bar */
+.search-bar {
+  max-width: 480px;
+  margin: 0 auto;
+  background-color: var(--white);
+  border: 1px solid var(--cream-dark);
+  border-radius: 999px;
+  padding: 0.375rem 0.375rem 0.375rem 1.25rem;
+}
+
+.search-bar input.form-control {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.search-bar input.form-control:focus {
+  box-shadow: none;
+}
+
+/* Forms */
+.recipe-form-card {
+  background-color: #fcfaf4;
+  border: 1px solid var(--cream-dark);
+  border-radius: 24px;
+  padding: 2.5rem;
+}
+
+.recipe-form-card .form-label {
+  font-weight: 700;
+  color: var(--brown);
+}
+
+.recipe-form-card .form-control,
+.recipe-form-card .form-select {
+  border-radius: 12px;
+  border-color: var(--cream-dark);
+}
+
+/* Meta row on recipe detail page */
+.meta-row {
+  background-color: var(--cream-dark);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.meta-item-label {
+  color: var(--brown-soft);
+  font-size: 0.8125rem;
+  display: block;
+}
+
+.meta-item-value {
+  font-weight: 700;
+  color: var(--brown);
+}
+
+.meta-item-value.link {
+  color: var(--terracotta);
+  word-break: break-all;
+}
