@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 
 import Footer from "./components/layout/Footer.jsx";
 import NavBar from "./components/layout/NavBar.jsx";
@@ -17,6 +17,7 @@ export default function App() {
           <Route path="/catalog" element={<CatalogPage />} />
           <Route path="/recipe/:id" element={<RecipePage />} />
           <Route path="/submit" element={<SubmitPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
       <Footer />

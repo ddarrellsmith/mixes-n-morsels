@@ -4,6 +4,18 @@ import { fetchRecipes, insertRecipe } from "../utils/supabase.js";
 
 const RecipesContext = createContext(null);
 
+function normalizeRecipeId(value) {
+  return String(value ?? "").trim().toLowerCase();
+}
+
+function matchesRecipeId(recipe, candidateId) {
+  if (!recipe || candidateId === undefined || candidateId === null) {
+    return false;
+  }
+
+  return normalizeRecipeId(recipe.id) === normalizeRecipeId(candidateId);
+}
+
 export function RecipesProvider({ children }) {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,7 +56,7 @@ export function RecipesProvider({ children }) {
   }
 
   function getRecipeById(id) {
-    return recipes.find((r) => r.id === id);
+    return recipes.find((recipe) => matchesRecipeId(recipe, id));
   }
 
   const value = { recipes, addRecipe, getRecipeById, loading, error };
