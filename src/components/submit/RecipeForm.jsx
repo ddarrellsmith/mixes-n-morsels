@@ -42,10 +42,10 @@ export default function RecipeForm() {
     }
 
     const recipe = {
-      title: form.title.trim(),
+      recipe_name: form.title.trim(),
       author: form.author.trim(),
       category: form.category,
-      prepTime: form.prepTime.trim(),
+      prep_time: form.prepTime.trim(),
       servings: form.servings.trim(),
       keywords: form.keywords
         .split(",")
@@ -54,8 +54,8 @@ export default function RecipeForm() {
       description: form.description.trim(),
       ingredients: form.ingredients.split("\n").map((i) => i.trim()).filter(Boolean),
       instructions: form.instructions.split("\n").map((i) => i.trim()).filter(Boolean),
-      imageUrl: form.imageUrl || FALLBACK_IMAGE,
-      videoUrl: form.videoUrl.trim() || undefined,
+      recipe_image: form.imageUrl || FALLBACK_IMAGE,
+      video_link: form.videoUrl.trim() || undefined,
     };
 
     try {

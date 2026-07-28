@@ -14,6 +14,56 @@ const headers = () => ({
   "Content-Type": "application/json",
 });
 
+export function normalizeRecipe(recipe = {}) {
+  if (!recipe || typeof recipe !== "object") {
+    return recipe;
+  }
+
+  const keywords = Array.isArray(recipe.keywords)
+    ? recipe.keywords
+    : typeof recipe.keywords === "string" && recipe.keywords.trim()
+      ? recipe.keywords.split(",").map((keyword) => keyword.trim()).filter(Boolean)
+      : [];
+
+  return {
+    ...recipe,
+    id: recipe.id ?? recipe.recipe_id,
+    title: recipe.title ?? recipe.recipe_name ?? recipe.name ?? "",
+    author: recipe.author ?? "",
+    category: recipe.category ?? "",
+    keywords,
+    description: recipe.description ?? "",
+    ingredients: Array.isArray(recipe.ingredients) ? recipe.ingredients : [],
+    instructions: Array.isArray(recipe.instructions) ? recipe.instructions : [],
+    imageUrl: recipe.imageUrl ?? recipe.recipe_image ?? recipe.image_url ?? recipe.image ?? "",
+    videoUrl: recipe.videoUrl ?? recipe.video_link ?? recipe.video_url ?? recipe.video ?? undefined,
+    prepTime: recipe.prepTime ?? recipe.prep_time ?? "",
+    servings: recipe.servings ?? "",
+  };
+}
+
+function toApiRecipe(recipe = {}) {
+  const payload = {
+    recipe_name: recipe.title ?? recipe.recipe_name ?? "",
+    author: recipe.author ?? "",
+    category: recipe.category ?? "",
+    keywords: Array.isArray(recipe.keywords) ? recipe.keywords : [],
+    description: recipe.description ?? "",
+    ingredients: Array.isArray(recipe.ingredients) ? recipe.ingredients : [],
+    instructions: Array.isArray(recipe.instructions) ? recipe.instructions : [],
+    recipe_image: recipe.imageUrl ?? recipe.recipe_image ?? "",
+    video_link: recipe.videoUrl ?? recipe.video_link ?? null,
+    prep_time: recipe.prepTime ?? recipe.prep_time ?? "",
+    servings: recipe.servings ?? "",
+  };
+
+  if (recipe.id !== undefined) {
+    payload.id = recipe.id;
+  }
+
+  return payload;
+}
+
 export async function fetchRecipes() {
   requireApiKey();
 
@@ -26,7 +76,8 @@ export async function fetchRecipes() {
     throw new Error(`Supabase fetch failed: ${response.status} ${body}`);
   }
 
-  return response.json();
+  const recipes = await response.json();
+  return Array.isArray(recipes) ? recipes.map(normalizeRecipe) : [];
 }
 
 export async function insertRecipe(recipe) {
@@ -38,7 +89,7 @@ export async function insertRecipe(recipe) {
       ...headers(),
       Prefer: "return=representation",
     },
-    body: JSON.stringify(recipe),
+    body: JSON.stringify(toApiRecipe(recipe)),
   });
 
   if (!response.ok) {
@@ -47,5 +98,6 @@ export async function insertRecipe(recipe) {
   }
 
   const result = await response.json();
-  return result[0];
+  const createdRecipe = Array.isArray(result) ? result[0] : result;
+  return normalizeRecipe(createdRecipe);
 }
