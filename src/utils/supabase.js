@@ -1,5 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
+import sampleRecipes from "../../example_api_data.json";
+
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://oqvpuqscwaqvkrddrhgp.supabase.co";
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_KEY;
 
@@ -67,19 +69,28 @@ function toApiRecipe(recipe = {}) {
 }
 
 export async function fetchRecipes() {
-  requireApiKey();
-
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/recipes?select=*`, {
-    headers: headers(),
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Supabase fetch failed: ${response.status} ${body}`);
+  if (!SUPABASE_KEY) {
+    console.warn("No Supabase key configured; using bundled sample recipes.");
+    return Array.isArray(sampleRecipes) ? sampleRecipes.map(normalizeRecipe) : [];
   }
 
-  const recipes = await response.json();
-  return Array.isArray(recipes) ? recipes.map(normalizeRecipe) : [];
+  try {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/recipes?select=*`, {
+      headers: headers(),
+    });
+
+    if (!response.ok) {
+      const body = await response.text();
+      console.warn(`Supabase fetch failed (${response.status}): ${body}. Falling back to sample recipes.`);
+      return Array.isArray(sampleRecipes) ? sampleRecipes.map(normalizeRecipe) : [];
+    }
+
+    const recipes = await response.json();
+    return Array.isArray(recipes) ? recipes.map(normalizeRecipe) : [];
+  } catch (error) {
+    console.warn("Supabase fetch failed; falling back to sample recipes.", error);
+    return Array.isArray(sampleRecipes) ? sampleRecipes.map(normalizeRecipe) : [];
+  }
 }
 
 export async function insertRecipe(recipe) {
