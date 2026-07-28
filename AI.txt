@@ -1,0 +1,10 @@
+What I did:
+    - Prompt claude to read the prototype and create a design (architecture.md)
+    - Ask claude to read the design
+    - Provided iterative feedback
+    - Manually adjusted the Recipe and Submission pages
+    - Provide guidance and iterative feedback to Claude on how to structure the home page and filter bars
+    - Set up a Supabase table and Google OAauth client
+What Claude Sonnet did:
+    - Generate ~98% of javascript code
+    - Provide guidance and troubleshooting for gitpages

@@ -33,7 +33,7 @@ export default function RecipeForm() {
     setForm((prev) => ({ ...prev, [field]: value }));
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     if (!form.title.trim() || !form.author.trim() || !form.ingredients.trim() || !form.instructions.trim()) {
@@ -58,8 +58,13 @@ export default function RecipeForm() {
       videoUrl: form.videoUrl.trim() || undefined,
     };
 
-    const created = addRecipe(recipe);
-    navigate(`/recipe/${created.id}`);
+    try {
+      const created = await addRecipe(recipe);
+      navigate(`/recipe/${created.id}`);
+    } catch (submitError) {
+      console.error(submitError);
+      setError("Unable to submit the recipe right now. Please try again.");
+    }
   }
 
   return (

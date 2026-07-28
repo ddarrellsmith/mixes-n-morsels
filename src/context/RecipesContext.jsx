@@ -1,28 +1,53 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-import { seedRecipes } from "../data/seedRecipes.js";
-import { loadUserRecipes, saveUserRecipes } from "../utils/storage.js";
+import { fetchRecipes, insertRecipe } from "../utils/supabase.js";
 
 const RecipesContext = createContext(null);
 
 export function RecipesProvider({ children }) {
-  const [userRecipes, setUserRecipes] = useState(() => loadUserRecipes());
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const recipes = useMemo(() => [...seedRecipes, ...userRecipes], [userRecipes]);
+  useEffect(() => {
+    let isMounted = true;
 
-  function addRecipe(recipe) {
-    const newRecipe = { id: crypto.randomUUID(), ...recipe };
-    const next = [...userRecipes, newRecipe];
-    setUserRecipes(next);
-    saveUserRecipes(next);
-    return newRecipe;
+    async function load() {
+      try {
+        const remoteRecipes = await fetchRecipes();
+        if (isMounted) {
+          setRecipes(remoteRecipes);
+        }
+      } catch (fetchError) {
+        console.error(fetchError);
+        if (isMounted) {
+          setError(fetchError);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    load();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  async function addRecipe(recipe) {
+    const createdRecipe = await insertRecipe(recipe);
+    setRecipes((prev) => [...prev, createdRecipe]);
+    return createdRecipe;
   }
 
   function getRecipeById(id) {
     return recipes.find((r) => r.id === id);
   }
 
-  const value = { recipes, addRecipe, getRecipeById };
+  const value = { recipes, addRecipe, getRecipeById, loading, error };
 
   return <RecipesContext.Provider value={value}>{children}</RecipesContext.Provider>;
 }
