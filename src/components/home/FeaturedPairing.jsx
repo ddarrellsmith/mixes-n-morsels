@@ -8,8 +8,7 @@ import { pickRandomPairing } from "../../utils/pairing.js";
 
 export default function FeaturedPairing() {
   const { recipes } = useRecipes();
-  // useMemo with an empty dependency array picks one pairing per Homepage mount.
-  const { morsel, mix } = useMemo(() => pickRandomPairing(recipes), []); // eslint-disable-line react-hooks/exhaustive-deps
+  const { morsel, mix } = useMemo(() => pickRandomPairing(recipes), [recipes]);
 
   if (!morsel && !mix) return null;
 
