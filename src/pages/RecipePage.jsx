@@ -12,6 +12,7 @@ import { useRecipes } from "../context/RecipesContext.jsx";
 
 export default function RecipePage() {
   const { id } = useParams();
+  console.log("RecipePage id:", id);
   const { getRecipeById } = useRecipes();
   const recipe = getRecipeById(id);
 
