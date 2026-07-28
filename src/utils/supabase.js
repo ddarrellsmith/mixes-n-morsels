@@ -1,5 +1,7 @@
+import { createClient } from "@supabase/supabase-js";
+
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://oqvpuqscwaqvkrddrhgp.supabase.co";
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY;
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_KEY;
 
 function requireApiKey() {
   if (!SUPABASE_KEY) {
@@ -100,4 +102,58 @@ export async function insertRecipe(recipe) {
   const result = await response.json();
   const createdRecipe = Array.isArray(result) ? result[0] : result;
   return normalizeRecipe(createdRecipe);
+}
+
+export function getSupabaseClient() {
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    return null;
+  }
+
+  return createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+    },
+  });
+}
+
+export function getCurrentAuthRedirectUrl(location = window.location) {
+  if (!location) {
+    return "";
+  }
+
+  const origin = location.origin ?? "";
+  const pathname = location.pathname ?? "/";
+  const hash = location.hash ?? "";
+
+  if (!hash) {
+    return `${origin}${pathname}`;
+  }
+
+  const route = hash.startsWith("#") ? hash : `#${hash}`;
+  return `${origin}${pathname}${route}`;
+}
+
+export async function signInWithGoogle() {
+  const supabase = getSupabaseClient();
+  if (!supabase) {
+    throw new Error("Supabase client is not configured.");
+  }
+
+  const redirectTo = getCurrentAuthRedirectUrl();
+
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo,
+      queryParams: {
+        access_type: "offline",
+        prompt: "consent",
+      },
+    },
+  });
+
+  if (error) {
+    throw error;
+  }
 }
