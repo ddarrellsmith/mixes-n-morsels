@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { fetchRecipes, insertRecipe } from "../utils/supabase.js";
+import { fetchRecipes } from "../utils/supabase.js";
+import { loadUserRecipes, saveUserRecipes, mergeRecipes } from "../utils/storage.js";
 
 const RecipesContext = createContext(null);
 
@@ -27,12 +28,15 @@ export function RecipesProvider({ children }) {
     async function load() {
       try {
         const remoteRecipes = await fetchRecipes();
+        const localRecipes = loadUserRecipes();
         if (isMounted) {
-          setRecipes(remoteRecipes);
+          setRecipes(mergeRecipes(remoteRecipes, localRecipes));
         }
       } catch (fetchError) {
         console.error(fetchError);
+        const fallbackLocalRecipes = loadUserRecipes();
         if (isMounted) {
+          setRecipes(fallbackLocalRecipes);
           setError(fetchError);
         }
       } finally {
@@ -49,9 +53,26 @@ export function RecipesProvider({ children }) {
     };
   }, []);
 
-  async function addRecipe(recipe) {
-    const createdRecipe = await insertRecipe(recipe);
-    setRecipes((prev) => [...prev, createdRecipe]);
+  function addRecipe(recipe) {
+    const createdRecipe = {
+      ...recipe,
+      id: `local-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      title: recipe.title ?? recipe.recipe_name ?? "Untitled Recipe",
+      author: recipe.author ?? "",
+      category: recipe.category ?? "Morsel",
+      keywords: Array.isArray(recipe.keywords) ? recipe.keywords : [],
+      description: recipe.description ?? "",
+      ingredients: Array.isArray(recipe.ingredients) ? recipe.ingredients : [],
+      instructions: Array.isArray(recipe.instructions) ? recipe.instructions : [],
+      imageUrl: recipe.imageUrl ?? recipe.recipe_image ?? "",
+      videoUrl: recipe.videoUrl ?? recipe.video_link ?? undefined,
+      prepTime: recipe.prepTime ?? recipe.prep_time ?? "",
+      servings: recipe.servings ?? "",
+    };
+
+    const nextLocalRecipes = [createdRecipe, ...loadUserRecipes()];
+    saveUserRecipes(nextLocalRecipes);
+    setRecipes((prev) => mergeRecipes(prev, [createdRecipe]));
     return createdRecipe;
   }
 

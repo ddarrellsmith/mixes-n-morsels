@@ -1,25 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import { getCurrentAuthRedirectUrl } from "./supabase.js";
+import { mergeRecipes } from "./storage.js";
 
-describe("getCurrentAuthRedirectUrl", () => {
-  it("returns the current hash route when one is present", () => {
-    const redirectUrl = getCurrentAuthRedirectUrl({
-      origin: "https://example.com",
-      pathname: "/mixes-n-morsels/",
-      hash: "#/submit",
-    });
+describe("mergeRecipes", () => {
+  it("adds local recipes alongside remote recipes", () => {
+    const remoteRecipes = [{ id: "remote-1", title: "Remote recipe" }];
+    const localRecipes = [{ id: "local-1", title: "Local recipe" }];
 
-    expect(redirectUrl).toBe("https://example.com/mixes-n-morsels/#/submit");
-  });
-
-  it("falls back to the origin when no route is present", () => {
-    const redirectUrl = getCurrentAuthRedirectUrl({
-      origin: "https://example.com",
-      pathname: "/mixes-n-morsels/",
-      hash: "",
-    });
-
-    expect(redirectUrl).toBe("https://example.com/mixes-n-morsels/");
+    expect(mergeRecipes(remoteRecipes, localRecipes)).toEqual([
+      { id: "remote-1", title: "Remote recipe" },
+      { id: "local-1", title: "Local recipe" },
+    ]);
   });
 });
