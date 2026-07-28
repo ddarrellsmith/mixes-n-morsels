@@ -13,6 +13,8 @@ const initialState = {
   title: "",
   author: "",
   category: "Morsel",
+  prepTime: "",
+  servings: "",
   keywords: "",
   description: "",
   ingredients: "",
@@ -43,6 +45,8 @@ export default function RecipeForm() {
       title: form.title.trim(),
       author: form.author.trim(),
       category: form.category,
+      prepTime: form.prepTime.trim(),
+      servings: form.servings.trim(),
       keywords: form.keywords
         .split(",")
         .map((k) => k.trim())
@@ -88,6 +92,26 @@ export default function RecipeForm() {
           <option value="Morsel">Morsel</option>
           <option value="Mix">Mix</option>
         </Form.Select>
+      </Form.Group>
+
+      <Form.Group className="mb-4">
+        <Form.Label>Prep Time</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="e.g. 30 min"
+          value={form.prepTime}
+          onChange={(e) => update("prepTime", e.target.value)}
+        />
+      </Form.Group>
+
+      <Form.Group className="mb-4">
+        <Form.Label>Servings</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="e.g. 4 servings"
+          value={form.servings}
+          onChange={(e) => update("servings", e.target.value)}
+        />
       </Form.Group>
 
       <Form.Group className="mb-4">

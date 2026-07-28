@@ -41,7 +41,6 @@ export default function MetaRow({ recipe }) {
     <Row className="meta-row justify-content-center g-4 my-4">
       <MetaItem label="Prep Time" value={recipe.prepTime} />
       <MetaItem label="Servings" value={recipe.servings} />
-      <MetaItem label="Difficulty" value={recipe.difficulty} />
       <MetaItem label="Author" value={recipe.author} />
       <VideoMetaItem url={recipe.videoUrl} />
     </Row>
