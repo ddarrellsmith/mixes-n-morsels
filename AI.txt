@@ -4,7 +4,7 @@ What I did:
     - Provided iterative feedback
     - Manually adjusted the Recipe and Submission pages
     - Provide guidance and iterative feedback to Claude on how to structure the home page and filter bars
-    - Set up a Supabase table and Google OAauth client
+    - Set up a Supabase table and Google OAauth client and access policies
 What Claude Sonnet did:
     - Generate ~98% of javascript code
     - Provide guidance and troubleshooting for gitpages
